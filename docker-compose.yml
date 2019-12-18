@@ -7,6 +7,8 @@ services:
     networks:
       mynet123:
         ipv4_address: 172.18.0.2
+    volumes:
+      - ./ubuntu-jboss-hlr/data:/opt/jboss-5.1.0GA/server/default/data
   cassandra:
     image: cassandra:2.2.13
     environment:
@@ -31,6 +33,8 @@ services:
     networks:
       mynet123:
         ipv4_address: 172.18.0.3
+    volumes:
+      - ./ubuntu-jboss-smsc/data:/opt/jboss-5.1.0.GA/server/default/data
 networks:
   mynet123:
     driver: bridge
