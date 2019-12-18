@@ -1,0 +1,43 @@
+version: '2.3'
+
+services:
+  hlr:
+    build: ./ubuntu-jboss-hlr
+    image: ubuntu-jboss-hlr
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.2
+  cassandra:
+    image: cassandra:2.2.13
+    environment:
+      - CASSANDRA_LISTEN_ADDRESS=172.18.0.10
+    volumes:
+      - ./data/cassandra:/var/lib/cassandra
+      - ./cassandra-init.sh:/cassandra-init.sh
+    command: "sh /cassandra-init.sh"
+    ports:
+      - "9042:9042"
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.10
+  smsc:
+    build: ./ubuntu-jboss-smsc
+    image: ubuntu-jboss-smsc
+    depends_on:
+      - cassandra
+      - hlr
+    environment:
+      WAIT_HOSTS: localhost:9042
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.3
+networks:
+  mynet123:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+       
+    
+
+
